@@ -6,7 +6,17 @@ edition = "2021"
 [dependencies]
 photon-rs = "0.3.2"
 actix-web = "4.8.0"
-image = { version = "0.25.1", default-features = false, features = ["jpeg", "png", "webp", "avif", "bmp", "ico", "tiff", "gif"] }
+image = { version = "0.25.1", default-features = false, features = [
+    "jpeg",
+    "png",
+    "webp",
+    "avif",
+    "avif-native",
+    "bmp",
+    "ico",
+    "tiff",
+    "gif",
+] }
 serde = { version = "1.0.197", features = ["derive"] }
 reqwest = { version = "0.12.5", features = ["json"] }
 thiserror = "1.0.61"
