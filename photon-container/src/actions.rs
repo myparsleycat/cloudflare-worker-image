@@ -41,6 +41,7 @@ pub async fn apply_actions(
             // --- transform ---
             "resize" => resize(img, &params)?,
             "fit" => fit(img, &params)?,
+            "thumbnail" => thumbnail(img, &params)?,
             "crop" => crop(img, &params)?,
             "fliph" => {
                 transform::fliph(&mut img);
@@ -317,4 +318,32 @@ fn fit(img: PhotonImage, params: &[&str]) -> Result<PhotonImage, AppError> {
     };
 
     Ok(transform::resize(&img, new_width, new_height, transform::SamplingFilter::Lanczos3))
+}
+
+fn thumbnail(img: PhotonImage, params: &[&str]) -> Result<PhotonImage, AppError> {
+    if params.len() < 2 {
+        return Err(AppError::InvalidActionParam(
+            "thumbnail requires 2 parameters: width, height".to_string(),
+        ));
+    }
+    let target_width = parse_param(params.get(0), 150u32);
+    let target_height = parse_param(params.get(1), 150u32);
+    
+    let original_width = img.get_width();
+    let original_height = img.get_height();
+    
+    let width_ratio = target_width as f32 / original_width as f32;
+    let height_ratio = target_height as f32 / original_height as f32;
+    
+    let ratio = width_ratio.max(height_ratio);
+    
+    let intermediate_width = (original_width as f32 * ratio) as u32;
+    let intermediate_height = (original_height as f32 * ratio) as u32;
+    
+    let resized_img = transform::resize(&img, intermediate_width, intermediate_height, transform::SamplingFilter::Lanczos3);
+    
+    let x_offset = (intermediate_width - target_width) / 2;
+    let y_offset = (intermediate_height - target_height) / 2;
+    
+    Ok(transform::crop(&resized_img, x_offset, y_offset, x_offset + target_width, y_offset + target_height))
 }
