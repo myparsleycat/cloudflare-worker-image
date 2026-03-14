@@ -11,11 +11,11 @@
 	},
 	"containers": [
 		{
-			"max_instances": 2,
+			"max_instances": 20,
 			"name": "photon-container",
 			"class_name": "PhotonContainer",
 			"image": "./Dockerfile",
-			"instance_type": "basic"
+			"instance_type": "standard"
 		}
 	],
 	"durable_objects": {
