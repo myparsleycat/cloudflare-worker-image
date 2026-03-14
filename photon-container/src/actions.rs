@@ -123,7 +123,7 @@ pub async fn apply_actions(
 
             _ => {
                 warn!("Unknown action: {} {{ url: {} }}", action_name, original_url);
-                img
+                return Err(AppError::UnknownAction(action_name.to_string()));
             }
         };
     }

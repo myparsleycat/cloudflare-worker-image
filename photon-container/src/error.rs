@@ -24,13 +24,16 @@ pub enum AppError {
 
     #[error("Invalid action parameter: {0}")]
     InvalidActionParam(String),
+
+    #[error("Unknown action: {0}")]
+    UnknownAction(String),
 }
 
 impl ResponseError for AppError {
     fn status_code(&self) -> StatusCode {
         match self {
             AppError::FetchStatusError { .. } => StatusCode::BAD_GATEWAY,
-            AppError::InvalidActionParam(_) => StatusCode::BAD_REQUEST,
+            AppError::InvalidActionParam(_) | AppError::UnknownAction(_) => StatusCode::BAD_REQUEST,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
