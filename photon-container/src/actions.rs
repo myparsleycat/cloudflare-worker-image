@@ -40,6 +40,7 @@ pub async fn apply_actions(
         img = match action_name {
             // --- transform ---
             "resize" => resize(img, &params)?,
+            "fit" => fit(img, &params)?,
             "crop" => crop(img, &params)?,
             "fliph" => {
                 transform::fliph(&mut img);
@@ -295,4 +296,25 @@ fn remove_channel(
         }
     }
     Ok(img)
+}
+
+fn fit(img: PhotonImage, params: &[&str]) -> Result<PhotonImage, AppError> {
+    if params.is_empty() {
+        return Err(AppError::InvalidActionParam(
+            "fit requires 1 parameter: max_size".to_string(),
+        ));
+    }
+    let max_size = parse_param(params.get(0), 500u32);
+    let width = img.get_width();
+    let height = img.get_height();
+
+    let (new_width, new_height) = if width > height {
+        let scale = max_size as f32 / width as f32;
+        (max_size, (height as f32 * scale) as u32)
+    } else {
+        let scale = max_size as f32 / height as f32;
+        ((width as f32 * scale) as u32, max_size)
+    };
+
+    Ok(transform::resize(&img, new_width, new_height, transform::SamplingFilter::Lanczos3))
 }
