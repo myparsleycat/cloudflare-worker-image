@@ -4,7 +4,7 @@
 	"main": "src/index.js",
 	"compatibility_date": "2025-06-24",
 	"vars": {
-		"WHITE_LIST": "miantiao.me,mt.ci"
+		"WHITE_LIST": "nahida.live,n1.nahida.live,n2.nahida.live"
 	},
 	"observability": {
 		"enabled": true,
